@@ -64,21 +64,29 @@ public class BankHeist extends JavaPlugin {
 						double bid = toDouble(args[0]);
 
 						if (bid > 0) {
-							if (state == Heist.AVAILABLE) {
-								getServer().broadcastMessage(ChatColor.DARK_GREEN + p.getDisplayName() + ChatColor.GREEN + " has started planning a bankheist!");
-								getServer().broadcastMessage(ChatColor.GREEN + "Type " + ChatColor.DARK_GREEN + "/bankheist x" + ChatColor.GREEN + " to enter.");
+							double bal = economy.getBalance(p);
 
-								state = Heist.WAITING;
+							if (bal >= bid) {
+								economy.withdrawPlayer(p, bid);
+								
+								if (state == Heist.AVAILABLE) {
+									getServer().broadcastMessage(ChatColor.DARK_GREEN + p.getDisplayName() + ChatColor.GREEN + " has started planning a bankheist!");
+									getServer().broadcastMessage(ChatColor.GREEN + "Type " + ChatColor.DARK_GREEN + "/bankheist x" + ChatColor.GREEN + " to enter.");
 
-								getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-									@Override
-									public void run() {
-										startHeist();
-									}
-								}, 2400);
+									state = Heist.WAITING;
+
+									getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+										@Override
+										public void run() {
+											startHeist();
+										}
+									}, 2400);
+								}
+
+								participants.put(p.getUniqueId(), bid);
+								p.sendMessage(ChatColor.GREEN + "You have joined the heist with a $" + bid + " bid.");
 							}
-
-							participants.put(p.getUniqueId(), bid);
+							
 						} else {
 							p.sendMessage(ChatColor.RED + "Bid must be $1 or more!");
 						}
