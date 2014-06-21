@@ -61,36 +61,41 @@ public class BankHeist extends JavaPlugin {
 			if (args.length == 1) {
 				if (state != Heist.RUNNING) {
 					if (state != Heist.IDLE) {
-						double bid = toDouble(args[0]);
+						if (!participants.containsKey(p.getUniqueId())) {
+							double bid = toDouble(args[0]);
 
-						if (bid > 0) {
-							double bal = economy.getBalance(p);
+							if (bid > 0) {
+								double bal = economy.getBalance(p);
 
-							if (bal >= bid) {
-								economy.withdrawPlayer(p, bid);
-								
-								if (state == Heist.AVAILABLE) {
-									getServer().broadcastMessage(ChatColor.DARK_GREEN + p.getDisplayName() + ChatColor.GREEN + " has started planning a bankheist!");
-									getServer().broadcastMessage(ChatColor.GREEN + "Type " + ChatColor.DARK_GREEN + "/bankheist x" + ChatColor.GREEN + " to enter.");
+								if (bal >= bid) {
+									economy.withdrawPlayer(p, bid);
 
-									state = Heist.WAITING;
+									if (state == Heist.AVAILABLE) {
+										getServer().broadcastMessage(ChatColor.DARK_GREEN + p.getDisplayName() + ChatColor.GREEN + " has started planning a bankheist!");
+										getServer().broadcastMessage(ChatColor.GREEN + "Type " + ChatColor.DARK_GREEN + "/bankheist x" + ChatColor.GREEN + " to enter.");
 
-									getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-										@Override
-										public void run() {
-											startHeist();
-										}
-									}, 2400);
+										state = Heist.WAITING;
+
+										getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+											@Override
+											public void run() {
+												startHeist();
+											}
+										}, 2400);
+									}
+
+									participants.put(p.getUniqueId(), bid);
+									p.sendMessage(ChatColor.GREEN + "You have joined the heist with a $" + bid + " bid.");
+								} else {
+									p.sendMessage(ChatColor.RED + "You don't have enough money!");
 								}
 
-								participants.put(p.getUniqueId(), bid);
-								p.sendMessage(ChatColor.GREEN + "You have joined the heist with a $" + bid + " bid.");
 							} else {
-								p.sendMessage(ChatColor.RED + "You don't have enough money!");
+								p.sendMessage(ChatColor.RED + "Bid must be $1 or more!");
 							}
 							
 						} else {
-							p.sendMessage(ChatColor.RED + "Bid must be $1 or more!");
+							p.sendMessage(ChatColor.RED + "You are already planning a bankheist!");
 						}
 
 					} else {
