@@ -85,6 +85,8 @@ public class BankHeist extends JavaPlugin {
 
 								participants.put(p.getUniqueId(), bid);
 								p.sendMessage(ChatColor.GREEN + "You have joined the heist with a $" + bid + " bid.");
+							} else {
+								p.sendMessage(ChatColor.RED + "You don't have enough money!");
 							}
 							
 						} else {
