@@ -101,8 +101,10 @@ public class BankHeist extends JavaPlugin {
 	private void startHeist() {
 		int k = participants.size();
 
-		if (k == 0)
+		if (k == 0) {
+			state = Heist.AVAILABLE;
 			return;
+		}
 
 		state = Heist.RUNNING;
 
