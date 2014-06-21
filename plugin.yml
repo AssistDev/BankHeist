@@ -1,0 +1,9 @@
+name: BankHeist
+version: 1.0.0
+description: Simple but fun chat based event
+author: Assist
+main: me.assist.bankheist.BankHeist
+softdepend: [Vault]
+commands:
+  bankheist:
+    description: Enter the bankheist
